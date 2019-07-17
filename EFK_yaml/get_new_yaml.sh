@@ -1,0 +1,1 @@
+for file in es-service es-statefulset fluentd-es-configmap fluentd-es-ds kibana-deployment kibana-service; do curl -o $file.yaml https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/fluentd-elasticsearch/$file.yaml; done
