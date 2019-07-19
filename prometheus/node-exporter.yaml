@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  creationTimestamp: 2019-03-19T08:49:07Z
+  generation: 1
+  labels:
+    app: node-exporter
+  name: node-exporter
+  namespace: ns-monitor
+  resourceVersion: "22679989"
+  selfLink: /apis/extensions/v1beta1/namespaces/ns-monitor/daemonsets/node-exporter
+  uid: db2e88b7-4a23-11e9-9fc9-525400694f9d
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: node-exporter
+    spec:
+      containers:
+      - image: prom/node-exporter:v0.16.0
+        imagePullPolicy: IfNotPresent
+        name: node-exporter
+        ports:
+        - containerPort: 9100
+          hostPort: 9100
+          name: http
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      hostPID: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+  templateGeneration: 1
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
+    type: RollingUpdate
+status:
+  currentNumberScheduled: 4
+  desiredNumberScheduled: 4
+  numberAvailable: 4
+  numberMisscheduled: 0
+  numberReady: 4
+  observedGeneration: 1
+  updatedNumberScheduled: 4

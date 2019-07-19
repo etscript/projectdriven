@@ -1,0 +1,95 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: 2019-03-19T08:49:07Z
+  generation: 1
+  labels:
+    app: alertmanager
+  name: alertmanager
+  namespace: ns-monitor
+  resourceVersion: "26528075"
+  selfLink: /apis/extensions/v1beta1/namespaces/ns-monitor/deployments/alertmanager
+  uid: db20b1bd-4a23-11e9-9fc9-525400694f9d
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+      - image: prom/alertmanager:latest
+        imagePullPolicy: Always
+        name: alertmanager
+        ports:
+        - containerPort: 9093
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/alertmanager/
+          name: alertmanager-conf
+        - mountPath: /etc/alertmanager/template/
+          name: wechat-conf
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/hostname: master
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: prometheus
+      serviceAccountName: prometheus
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: alertmanager-conf
+        name: alertmanager-conf
+      - configMap:
+          defaultMode: 420
+          name: wechat.template
+        name: wechat-conf
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+  creationTimestamp: 2019-03-19T08:49:07Z
+  labels:
+    app: alertmanager
+  name: alertmanager-service
+  namespace: ns-monitor
+  resourceVersion: "15122925"
+  selfLink: /api/v1/namespaces/ns-monitor/services/alertmanager-service
+  uid: db2340a4-4a23-11e9-9fc9-525400694f9d
+spec:
+  clusterIP: 10.96.241.70
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 30711
+    port: 9093
+    protocol: TCP
+    targetPort: 9093
+  selector:
+    app: alertmanager
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}

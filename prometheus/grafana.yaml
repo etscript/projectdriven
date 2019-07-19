@@ -1,0 +1,88 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+  creationTimestamp: 2019-03-19T08:49:07Z
+  generation: 1
+  labels:
+    app: grafana
+  name: grafana
+  namespace: ns-monitor
+  resourceVersion: "26528051"
+  selfLink: /apis/extensions/v1beta1/namespaces/ns-monitor/deployments/grafana
+  uid: db28e6c3-4a23-11e9-9fc9-525400694f9d
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: grafana
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - env:
+        - name: GF_AUTH_BASIC_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "false"
+        image: grafana/grafana:latest
+        imagePullPolicy: Always
+        name: grafana
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /login
+            port: 3000
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-data-volume
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/hostname: master
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: grafana-data-volume
+        persistentVolumeClaim:
+          claimName: grafana-data-pvc
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: grafana
+  name: grafana-service
+  namespace: ns-monitor
+spec:
+  selector:
+    app: grafana
+  ports:
+  - nodePort: 30844
+    port: 3000
+    targetPort: 3000
+  type: NodePort

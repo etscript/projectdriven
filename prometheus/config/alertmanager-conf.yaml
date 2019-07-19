@@ -1,0 +1,29 @@
+apiVersion: v1
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+
+    templates:
+    - /etc/alertmanager/template/wechat.tmpl
+
+    route:
+      group_by: ['alertname']
+      receiver: 'wechat'
+
+    receivers:
+    - name: 'wechat'
+      wechat_configs:
+      - corp_id: 'xxxxxxx'
+        to_party: '2'
+        agent_id: '1000004'
+        api_secret: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        send_resolved: true
+kind: ConfigMap
+metadata:
+  creationTimestamp: 2019-03-19T08:49:07Z
+  name: alertmanager-conf
+  namespace: ns-monitor
+  resourceVersion: "15243960"
+  selfLink: /api/v1/namespaces/ns-monitor/configmaps/alertmanager-conf
+  uid: db1e7e92-4a23-11e9-9fc9-525400694f9d

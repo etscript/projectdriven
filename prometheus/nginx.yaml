@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "3"
+  creationTimestamp: 2019-03-25T09:43:47Z
+  generation: 3
+  labels:
+    app: nginx
+  name: nginx
+  namespace: ns-monitor
+  resourceVersion: "28963063"
+  selfLink: /apis/extensions/v1beta1/namespaces/ns-monitor/deployments/nginx
+  uid: 7cf2c4fd-4ee2-11e9-9fc9-525400694f9d
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - command:
+        - sleep
+        - "60000"
+        image: busybox
+        imagePullPolicy: Always
+        name: nginx
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: 2019-03-25T09:43:47Z
+    lastUpdateTime: 2019-03-25T09:51:30Z
+    message: ReplicaSet "nginx-7bf9dfb58f" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: 2019-06-24T02:18:41Z
+    lastUpdateTime: 2019-06-24T02:18:41Z
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 3
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

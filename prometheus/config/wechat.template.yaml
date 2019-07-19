@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  wechat.tmpl: "{{ define \"wechat.default.message\" }} {{ range .Alerts }}\n========{{.Status}}==========
+    \n告警级别：{{ .Labels.severity }} \n告警类型：{{ .Labels.alertname }} \n告警详情: {{ .Annotations.description
+    }} \n触发时间: {{ .StartsAt.Format \"2006-01-02 15:04:05\" }} \n=====================
+    \n{{ end }} \n{{ end }}\n"
+kind: ConfigMap
+metadata:
+  creationTimestamp: 2019-03-19T08:49:07Z
+  name: wechat.template
+  namespace: ns-monitor
+  resourceVersion: "15243937"
+  selfLink: /api/v1/namespaces/ns-monitor/configmaps/wechat.template
+  uid: db1fb12e-4a23-11e9-9fc9-525400694f9d
